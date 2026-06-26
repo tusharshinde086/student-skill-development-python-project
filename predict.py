@@ -1,104 +1,80 @@
+
+import os
 import pickle
 import pandas as pd
 
-# =====================================================
-# Student Skill Development Prediction System
-# Predict Placement and Skill Level
-# =====================================================
+placement_model = pickle.load(open("models/placement_model.pkl","rb"))
+cluster_model = pickle.load(open("models/cluster_model.pkl","rb"))
 
-# Load trained machine learning models
-placement_model = pickle.load(open("models/placement_model.pkl", "rb"))
-cluster_model = pickle.load(open("models/cluster_model.pkl", "rb"))
+def calculate_grade(score):
+    if score>=90: return "A+"
+    elif score>=75: return "A"
+    elif score>=60: return "B"
+    elif score>=40: return "C"
+    return "D"
 
-print("=" * 55)
-print("     STUDENT SKILL DEVELOPMENT PREDICTION")
-print("=" * 55)
+print("="*60)
+print("STUDENT SKILL DEVELOPMENT PREDICTION SYSTEM")
+print("="*60)
 
-print("\nEnter Student Details")
-print("-" * 45)
+student_id=input("Student ID: ")
+student_name=input("Student Name: ")
+age=int(input("Age: "))
+gender=input("Gender: ")
 
-# Attendance Percentage (0-100)
-attendance = float(input("Attendance (%) [Example: 90]: "))
+attendance=float(input("Attendance (%): "))
+study_hours=float(input("Study Hours/Day: "))
+assignments=int(input("Assignments Completed: "))
+python_skill=int(input("Python Skill: "))
+java_skill=int(input("Java Skill: "))
+sql_skill=int(input("SQL Skill: "))
+communication=int(input("Communication Skill: "))
+previous_score=float(input("Previous Score: "))
+final_score=float(input("Current Final Score: "))
 
-# Average study hours per day
-study_hours = float(input("Study Hours per Day [Example: 5]: "))
-
-# Total assignments completed
-assignments = int(input("Assignments Completed [Example: 8]: "))
-
-# Python programming skill
-python_skill = int(input("Python Skill (0-100) [Example: 85]: "))
-
-# Java programming skill
-java_skill = int(input("Java Skill (0-100) [Example: 80]: "))
-
-# SQL database skill
-sql_skill = int(input("SQL Skill (0-100) [Example: 75]: "))
-
-# Communication skill
-communication = int(input("Communication Skill (0-100) [Example: 90]: "))
-
-# Previous semester score
-previous_score = float(input("Previous Score (%) [Example: 82]: "))
-
-# Current final score
-final_score = float(input("Current Final Score (%) [Example: 88]: "))
-
-# -----------------------------------------------------
-# Create DataFrame for Placement Prediction
-# -----------------------------------------------------
-
-placement_input = pd.DataFrame({
-    "Attendance": [attendance],
-    "StudyHours": [study_hours],
-    "AssignmentsCompleted": [assignments],
-    "PythonSkill": [python_skill],
-    "JavaSkill": [java_skill],
-    "SQLSkill": [sql_skill],
-    "CommunicationSkill": [communication],
-    "PreviousScore": [previous_score]
+placement_df=pd.DataFrame({
+'Attendance':[attendance],
+'StudyHours':[study_hours],
+'AssignmentsCompleted':[assignments],
+'PythonSkill':[python_skill],
+'JavaSkill':[java_skill],
+'SQLSkill':[sql_skill],
+'CommunicationSkill':[communication],
+'PreviousScore':[previous_score]
 })
 
-# Predict Placement
-placement = placement_model.predict(placement_input)[0]
-
-# -----------------------------------------------------
-# Create DataFrame for Skill Clustering
-# -----------------------------------------------------
-
-cluster_input = pd.DataFrame({
-    "PythonSkill": [python_skill],
-    "JavaSkill": [java_skill],
-    "SQLSkill": [sql_skill],
-    "CommunicationSkill": [communication],
-    "FinalScore": [final_score]
+cluster_df=pd.DataFrame({
+'PythonSkill':[python_skill],
+'JavaSkill':[java_skill],
+'SQLSkill':[sql_skill],
+'CommunicationSkill':[communication],
+'FinalScore':[final_score]
 })
 
-# Predict Cluster
-cluster = cluster_model.predict(cluster_input)[0]
+placement=placement_model.predict(placement_df)[0]
+cluster=cluster_model.predict(cluster_df)[0]
 
-# Cluster Labels
-cluster_names = {
-    0: "Beginner",
-    1: "Intermediate",
-    2: "Advanced"
-}
+levels={0:'Beginner',1:'Intermediate',2:'Advanced'}
+placement_status='Eligible' if placement==1 else 'Not Eligible'
+grade=calculate_grade(final_score)
 
-# -----------------------------------------------------
-# Display Prediction Result
-# -----------------------------------------------------
+print("\n===== STUDENT REPORT =====")
+print("Student:",student_name)
+print("Placement:",placement_status)
+print("Skill Level:",levels.get(cluster))
+print("Grade:",grade)
 
-print("\n" + "=" * 55)
-print("               PREDICTION RESULT")
-print("=" * 55)
-
-if placement == 1:
-    print("Placement Status      : Eligible for Placement")
+os.makedirs("history",exist_ok=True)
+history_file="history/prediction_history.csv"
+rec=pd.DataFrame([{
+'StudentID':student_id,
+'StudentName':student_name,
+'Placement':placement_status,
+'SkillLevel':levels.get(cluster),
+'Grade':grade
+}])
+if os.path.exists(history_file):
+    rec.to_csv(history_file,mode='a',header=False,index=False)
 else:
-    print("Placement Status      : Not Eligible for Placement")
-
-print("Student Skill Level   :", cluster_names[cluster])
-
-print("=" * 55)
-print("Prediction Completed Successfully")
-print("=" * 55)
+    rec.to_csv(history_file,index=False)
+print("History saved.")
