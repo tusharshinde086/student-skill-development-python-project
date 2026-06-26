@@ -1,6 +1,5 @@
-```python
+
 # ==========================================
-# Student Skill Development Prediction System
 # Train Skill Cluster Model (K-Means)
 # ==========================================
 
@@ -156,4 +155,3 @@ print("Cluster 2 : Advanced")
 print("\n" + "=" * 65)
 print("SKILL CLUSTER MODEL TRAINING COMPLETED")
 print("=" * 65)
-```
