@@ -1,13 +1,50 @@
-import pandas as pd
+```python
+# ==========================================
+# Student Skill Development Prediction System
+# Train Skill Cluster Model (K-Means)
+# ==========================================
+
+# Import Libraries
+import os
 import pickle
-import matplotlib.pyplot as plt
+import pandas as pd
 
 from sklearn.cluster import KMeans
+from sklearn.metrics import silhouette_score
 
-# Load cleaned dataset
-df = pd.read_csv("dataset/students_cleaned.csv")
+print("=" * 65)
+print("        TRAIN SKILL CLUSTER MODEL")
+print("=" * 65)
 
-# Features for clustering
+# ==========================================
+# Load Dataset
+# ==========================================
+
+print("\nLoading Dataset...")
+
+df = pd.read_csv("dataset/students.csv")
+
+print("Dataset Loaded Successfully.")
+
+# ==========================================
+# Dataset Information
+# ==========================================
+
+print("\nDataset Information")
+print("-" * 40)
+
+print("Rows    :", df.shape[0])
+print("Columns :", df.shape[1])
+
+print("\nMissing Values")
+print(df.isnull().sum())
+
+# ==========================================
+# Select Features
+# ==========================================
+
+print("\nPreparing Skill Dataset...")
+
 X = df[[
     "PythonSkill",
     "JavaSkill",
@@ -16,48 +53,107 @@ X = df[[
     "FinalScore"
 ]]
 
-# Create K-Means model
+print("Skill Dataset Prepared Successfully.")
+
+# ==========================================
+# Train K-Means Model
+# ==========================================
+
+print("\nTraining K-Means Model...")
+
 kmeans = KMeans(
+
     n_clusters=3,
+
     random_state=42,
+
     n_init=10
+
 )
 
-# Train model
-df["Cluster"] = kmeans.fit_predict(X)
+kmeans.fit(X)
 
-# Save model
-pickle.dump(kmeans, open("models/cluster_model.pkl", "wb"))
+print("Model Trained Successfully.")
 
-# Cluster names
-cluster_names = {
-    0: "Beginner",
-    1: "Intermediate",
-    2: "Advanced"
-}
+# ==========================================
+# Assign Cluster Labels
+# ==========================================
 
-df["Level"] = df["Cluster"].map(cluster_names)
+df["Cluster"] = kmeans.labels_
 
-print("=" * 50)
-print("Student Clusters")
-print("=" * 50)
+# ==========================================
+# Cluster Information
+# ==========================================
 
-print(df[["StudentID","Name","Level"]].head(20))
+print("\nCluster Summary")
+print("-" * 40)
 
-# Cluster graph
-plt.figure(figsize=(8,6))
+print(df["Cluster"].value_counts())
 
-plt.scatter(
-    df["PythonSkill"],
-    df["FinalScore"],
-    c=df["Cluster"]
+# ==========================================
+# Silhouette Score
+# ==========================================
+
+score = silhouette_score(X, kmeans.labels_)
+
+print("\nSilhouette Score")
+print("-" * 40)
+
+print(round(score, 3))
+
+# ==========================================
+# Save Model
+# ==========================================
+
+print("\nSaving Model...")
+
+os.makedirs(
+
+    "models",
+
+    exist_ok=True
+
 )
 
-plt.title("Student Skill Clusters")
-plt.xlabel("Python Skill")
-plt.ylabel("Final Score")
+pickle.dump(
 
-plt.savefig("charts/clusters.png")
-plt.show()
+    kmeans,
 
-print("\nCluster model saved successfully.")
+    open("models/cluster_model.pkl", "wb")
+
+)
+
+print("Cluster Model Saved Successfully.")
+
+# ==========================================
+# Save Dataset with Clusters
+# ==========================================
+
+df.to_csv(
+
+    "dataset/students_clustered.csv",
+
+    index=False
+
+)
+
+print("Clustered Dataset Saved.")
+
+# ==========================================
+# Cluster Meaning
+# ==========================================
+
+print("\nCluster Meaning")
+print("-" * 40)
+print("Cluster 0 : Beginner")
+print("Cluster 1 : Intermediate")
+print("Cluster 2 : Advanced")
+
+# ==========================================
+# Completed
+# ==========================================
+
+print("\n" + "=" * 65)
+print("SKILL CLUSTER MODEL TRAINING COMPLETED")
+print("=" * 65)
+```
