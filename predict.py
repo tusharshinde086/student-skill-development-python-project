@@ -1,63 +1,104 @@
 import pickle
-import numpy as np
+import pandas as pd
 
-# Load trained models
+# =====================================================
+# Student Skill Development Prediction System
+# Predict Placement and Skill Level
+# =====================================================
+
+# Load trained machine learning models
 placement_model = pickle.load(open("models/placement_model.pkl", "rb"))
 cluster_model = pickle.load(open("models/cluster_model.pkl", "rb"))
 
-print("=" * 50)
-print("Student Skill Development Prediction")
-print("=" * 50)
+print("=" * 55)
+print("     STUDENT SKILL DEVELOPMENT PREDICTION")
+print("=" * 55)
 
-attendance = float(input("Attendance (%): "))
-study_hours = float(input("Study Hours per Day: "))
-assignments = int(input("Assignments Completed: "))
-python_skill = int(input("Python Skill (0-100): "))
-java_skill = int(input("Java Skill (0-100): "))
-sql_skill = int(input("SQL Skill (0-100): "))
-communication = int(input("Communication Skill (0-100): "))
-previous_score = float(input("Previous Score: "))
-final_score = float(input("Current Final Score: "))
+print("\nEnter Student Details")
+print("-" * 45)
 
-# Placement Prediction
-placement_input = np.array([[
-    attendance,
-    study_hours,
-    assignments,
-    python_skill,
-    java_skill,
-    sql_skill,
-    communication,
-    previous_score
-]])
+# Attendance Percentage (0-100)
+attendance = float(input("Attendance (%) [Example: 90]: "))
 
+# Average study hours per day
+study_hours = float(input("Study Hours per Day [Example: 5]: "))
+
+# Total assignments completed
+assignments = int(input("Assignments Completed [Example: 8]: "))
+
+# Python programming skill
+python_skill = int(input("Python Skill (0-100) [Example: 85]: "))
+
+# Java programming skill
+java_skill = int(input("Java Skill (0-100) [Example: 80]: "))
+
+# SQL database skill
+sql_skill = int(input("SQL Skill (0-100) [Example: 75]: "))
+
+# Communication skill
+communication = int(input("Communication Skill (0-100) [Example: 90]: "))
+
+# Previous semester score
+previous_score = float(input("Previous Score (%) [Example: 82]: "))
+
+# Current final score
+final_score = float(input("Current Final Score (%) [Example: 88]: "))
+
+# -----------------------------------------------------
+# Create DataFrame for Placement Prediction
+# -----------------------------------------------------
+
+placement_input = pd.DataFrame({
+    "Attendance": [attendance],
+    "StudyHours": [study_hours],
+    "AssignmentsCompleted": [assignments],
+    "PythonSkill": [python_skill],
+    "JavaSkill": [java_skill],
+    "SQLSkill": [sql_skill],
+    "CommunicationSkill": [communication],
+    "PreviousScore": [previous_score]
+})
+
+# Predict Placement
 placement = placement_model.predict(placement_input)[0]
 
-# Skill Cluster Prediction
-cluster_input = np.array([[
-    python_skill,
-    java_skill,
-    sql_skill,
-    communication,
-    final_score
-]])
+# -----------------------------------------------------
+# Create DataFrame for Skill Clustering
+# -----------------------------------------------------
 
+cluster_input = pd.DataFrame({
+    "PythonSkill": [python_skill],
+    "JavaSkill": [java_skill],
+    "SQLSkill": [sql_skill],
+    "CommunicationSkill": [communication],
+    "FinalScore": [final_score]
+})
+
+# Predict Cluster
 cluster = cluster_model.predict(cluster_input)[0]
 
-# Cluster Names
-levels = {
+# Cluster Labels
+cluster_names = {
     0: "Beginner",
     1: "Intermediate",
     2: "Advanced"
 }
 
-print("\n" + "=" * 50)
+# -----------------------------------------------------
+# Display Prediction Result
+# -----------------------------------------------------
+
+print("\n" + "=" * 55)
+print("               PREDICTION RESULT")
+print("=" * 55)
 
 if placement == 1:
-    print("Placement Prediction : YES")
+    print("Placement Status      : Eligible for Placement")
 else:
-    print("Placement Prediction : NO")
+    print("Placement Status      : Not Eligible for Placement")
 
-print("Skill Level         :", levels[cluster])
+print("Student Skill Level   :", cluster_names[cluster])
 
-print("=" * 50)
+print("=" * 55)
+print("Prediction Completed Successfully")
+print("=" * 55)
