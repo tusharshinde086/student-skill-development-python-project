@@ -13,24 +13,102 @@ def calculate_grade(score):
     elif score>=40: return "C"
     return "D"
 
-print("="*60)
-print("STUDENT SKILL DEVELOPMENT PREDICTION SYSTEM")
-print("="*60)
+# ==========================================
+# STUDENT INFORMATION
+# ==========================================
 
-student_id=input("Student ID: ")
-student_name=input("Student Name: ")
-age=int(input("Age: "))
-gender=input("Gender: ")
+print("\n========== STUDENT INFORMATION ==========")
 
-attendance=float(input("Attendance (%): "))
-study_hours=float(input("Study Hours/Day: "))
-assignments=int(input("Assignments Completed: "))
-python_skill=int(input("Python Skill: "))
-java_skill=int(input("Java Skill: "))
-sql_skill=int(input("SQL Skill: "))
-communication=int(input("Communication Skill: "))
-previous_score=float(input("Previous Score: "))
-final_score=float(input("Current Final Score: "))
+# Student ID (1-1000)
+student_id = get_int(
+    "Student ID (1-1000) [Example: 101]: ",
+    1, 1000
+)
+
+# Student Name
+student_name = input(
+    "Student Name [Example: Rahul Sharma]: "
+)
+
+# Age (18-30)
+age = get_int(
+    "Age (18-30) [Example: 21]: ",
+    18, 30
+)
+
+# Gender
+while True:
+    gender = input(
+        "Gender (M/F) [Example: M]: "
+    ).upper()
+
+    if gender in ["M", "F"]:
+        break
+
+    print("Invalid! Enter M or F only.")
+
+# ==========================================
+# ACADEMIC INFORMATION
+# ==========================================
+
+print("\n========== ACADEMIC INFORMATION ==========")
+
+attendance = get_float(
+    "Attendance (%) (0-100) [Example: 90]: ",
+    0, 100
+)
+
+study_hours = get_float(
+    "Study Hours/Day (1-24) [Example: 5]: ",
+    1, 24
+)
+
+assignments = get_int(
+    "Assignments Completed (1-10) [Example: 8]: ",
+    1, 10
+)
+
+# ==========================================
+# TECHNICAL SKILLS
+# ==========================================
+
+print("\n========== TECHNICAL SKILLS ==========")
+
+python_skill = get_int(
+    "Python Skill (1-10) [Example: 8]: ",
+    1, 10
+)
+
+java_skill = get_int(
+    "Java Skill (1-10) [Example: 7]: ",
+    1, 10
+)
+
+sql_skill = get_int(
+    "SQL Skill (1-10) [Example: 9]: ",
+    1, 10
+)
+
+communication = get_int(
+    "Communication Skill (1-10) [Example: 8]: ",
+    1, 10
+)
+
+# ==========================================
+# ACADEMIC PERFORMANCE
+# ==========================================
+
+print("\n========== ACADEMIC PERFORMANCE ==========")
+
+previous_score = get_float(
+    "Previous Score (0-100) [Example: 82]: ",
+    0, 100
+)
+
+final_score = get_float(
+    "Final Score (0-100) [Example: 88]: ",
+    0, 100
+)
 
 placement_df=pd.DataFrame({
 'Attendance':[attendance],
