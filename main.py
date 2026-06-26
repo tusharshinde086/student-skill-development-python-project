@@ -254,7 +254,7 @@ while True:
         break
 
     # --------------------------------------
-    # Invalid Choice
+    # Invalid Choice .
     # --------------------------------------
 
     else:
