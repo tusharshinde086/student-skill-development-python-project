@@ -1,42 +1,19 @@
 import pandas as pd
 
-# Load dataset
-df = pd.read_csv("dataset/students.csv")
 
-print("=" * 50)
-print("Student Skill Development Project")
-print("=" * 50)
+INPUT_FILE = "dataset/students.csv"
+OUTPUT_FILE = "dataset/students_cleaned.csv"
 
-# Display first 5 records
-print("\nFirst 5 Records:")
-print(df.head())
 
-# Dataset information
-print("\nDataset Information:")
-print(df.info())
-
-# Dataset shape
-print("\nRows and Columns:")
-print(df.shape)
-
-# Check missing values
-print("\nMissing Values:")
-print(df.isnull().sum())
-
-# Check duplicate records
-print("\nDuplicate Records:", df.duplicated().sum())
-
-# Remove duplicates
+df = pd.read_csv(INPUT_FILE)
 df = df.drop_duplicates()
 
-# Encode Placement column
-df["Placement"] = df["Placement"].map({
-    "Yes": 1,
-    "No": 0
-})
+if df["Placement"].dtype == object:
+    df["Placement"] = df["Placement"].map({"Yes": 1, "No": 0, "1": 1, "0": 0})
 
-# Save cleaned dataset
-df.to_csv("dataset/students_cleaned.csv", index=False)
+df["Placement"] = df["Placement"].astype(int)
+df.to_csv(OUTPUT_FILE, index=False)
 
-print("\nDataset cleaned successfully.")
-print("Cleaned file saved as dataset/students_cleaned.csv")
+print("Data preprocessing completed.")
+print(f"Rows saved: {len(df)}")
+print(f"Cleaned file: {OUTPUT_FILE}")

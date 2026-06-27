@@ -1,0 +1,2 @@
+StudentID,StudentName,Age,Gender,Attendance,StudyHours,AssignmentsCompleted,PythonSkill,JavaSkill,SQLSkill,CommunicationSkill,PreviousScore,FinalScore,Placement,SkillLevel,Grade
+2,tushar,22,m,55.0,5.0,9,55,66,69,99,98.0,66.0,Eligible,Intermediate,B
