@@ -133,11 +133,6 @@ Student_Skill_Development_Project
 
 # Installation
 
-### Clone Project
-
-```bash
-git clone <repository-link>
-```
 
 ### Open Project
 
@@ -182,7 +177,7 @@ python main.py
 
 8. View Prediction History
 
-9. About Project
+
 
 0. Exit
 ```
@@ -265,11 +260,5 @@ The project generates:
 - Machine Learning using Python
 
 ---
-
-# Author
-
-**Name:** Tushar shinde
-
-**Project:** AI & Machine Learning Mini Project
 
 ---
