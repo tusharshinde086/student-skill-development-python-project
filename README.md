@@ -142,6 +142,10 @@ cd Student_Skill_Development_Project
 
 ### Install Libraries
 
+clone  my git  repo :
+
+https://github.com/tusharshinde086/student-skill-development-python-project.git  
+
 ```bash
 pip install -r requirements.txt
 ```
